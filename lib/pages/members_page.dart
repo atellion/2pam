@@ -14,7 +14,7 @@ class MembersPage extends StatelessWidget {
     },
     {
       'name': 'Najmah Cleosa Vania Putri',
-      'nim': '124240119',
+      'nim': '124240104',
     },
   ];
 
