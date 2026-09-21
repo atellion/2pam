@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
-
 
 import 'pages/login_page.dart';
 import 'pages/home_page.dart';
-import 'services/session_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await initializeDateFormatting('id_ID', null);
 
+  await Supabase.initialize(
+    url: 'https://edcrimhkwdsunvsnmaxb.supabase.co',
+    publishableKey: 'sb_publishable_L9UIurI9uYrTmKnZbbTk2g_76TrsaOq',
+  );
+
   runApp(const KalenderAsistenApp());
 }
+
+final supabase = Supabase.instance.client;
 
 class KalenderAsistenApp extends StatelessWidget {
   const KalenderAsistenApp({super.key});
@@ -44,28 +49,20 @@ class AppGate extends StatefulWidget {
 }
 
 class _AppGateState extends State<AppGate> {
-  bool? loggedIn;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadSession();
-  }
-
-  Future<void> _loadSession() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (!mounted) return;
-    setState(() => loggedIn = prefs.getBool(SessionService.key) ?? false);
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (loggedIn == null) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
+    return StreamBuilder<AuthState>(
+      stream: supabase.auth.onAuthStateChange,
+      builder: (context, snapshot) {
+        final session = supabase.auth.currentSession;
 
-    return loggedIn!
-        ? HomePage(onLogout: _loadSession)
-        : LoginPage(onLogin: _loadSession);
+        if (session != null) {
+          return HomePage(onLogout: () async {
+            await supabase.auth.signOut();
+          });
+        }
+        return LoginPage(onLogin: () {});
+      },
+    );
   }
 }

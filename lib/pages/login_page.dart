@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../services/session_service.dart';
+import '../main.dart';
 
 class LoginPage extends StatefulWidget {
   final VoidCallback onLogin;
@@ -18,7 +18,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
 
-  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   bool obscurePassword = true;
@@ -26,64 +26,35 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    usernameController.dispose();
+    emailController.dispose();
     passwordController.dispose();
     super.dispose();
   }
 
   Future<void> _login() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
+    if (!_formKey.currentState!.validate()) return;
 
-    setState(() {
-      isLoading = true;
-    });
+    setState(() => isLoading = true);
 
-    // Simulasi proses login.
-    await Future.delayed(
-      const Duration(milliseconds: 500),
-    );
-
-    final username =
-        usernameController.text.trim();
-
-    final password =
-        passwordController.text;
-
-    // Login sementara untuk development.
-    //
-    // Username : admin
-    // Password : admin123
-    if (username == 'admin' &&
-        password == 'admin123') {
-      final prefs =
-          await SharedPreferences.getInstance();
-
-      await prefs.setBool(
-        SessionService.key,
-        true,
+    try {
+      await supabase.auth.signInWithPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text,
       );
-
+      // Tidak perlu widget.onLogin() manual, StreamBuilder di AppGate
+      // akan otomatis pindah ke HomePage saat status auth berubah.
+    } on AuthException catch (e) {
       if (!mounted) return;
-
-      widget.onLogin();
-    } else {
-      if (!mounted) return;
-
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Username atau password salah.',
-          ),
-        ),
+        SnackBar(content: Text(e.message)),
       );
-    }
-
-    if (mounted) {
-      setState(() {
-        isLoading = false;
-      });
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Terjadi kesalahan: $e')),
+      );
+    } finally {
+      if (mounted) setState(() => isLoading = false);
     }
   }
 
@@ -94,22 +65,16 @@ class _LoginPageState extends State<LoginPage> {
         child: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
-
             child: Form(
               key: _formKey,
-
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.stretch,
-
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const Icon(
                     Icons.calendar_month,
                     size: 90,
                   ),
-
                   const SizedBox(height: 20),
-
                   const Text(
                     'Kalender & Asisten',
                     textAlign: TextAlign.center,
@@ -118,36 +83,28 @@ class _LoginPageState extends State<LoginPage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-
                   const SizedBox(height: 8),
-
                   const Text(
                     'Silakan login untuk melanjutkan',
                     textAlign: TextAlign.center,
                   ),
-
                   const SizedBox(height: 32),
 
                   TextFormField(
-                    controller:
-                        usernameController,
-
-                    decoration:
-                        const InputDecoration(
-                      labelText: 'Username',
-                      prefixIcon:
-                          Icon(Icons.person),
+                    controller: emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: const InputDecoration(
+                      labelText: 'Email',
+                      prefixIcon: Icon(Icons.email),
                     ),
-
-                    textInputAction:
-                        TextInputAction.next,
-
+                    textInputAction: TextInputAction.next,
                     validator: (value) {
-                      if (value == null ||
-                          value.trim().isEmpty) {
-                        return 'Username wajib diisi';
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Email wajib diisi';
                       }
-
+                      if (!value.contains('@')) {
+                        return 'Format email tidak valid';
+                      }
                       return null;
                     },
                   ),
@@ -155,49 +112,31 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 16),
 
                   TextFormField(
-                    controller:
-                        passwordController,
-
-                    obscureText:
-                        obscurePassword,
-
-                    decoration:
-                        InputDecoration(
+                    controller: passwordController,
+                    obscureText: obscurePassword,
+                    decoration: InputDecoration(
                       labelText: 'Password',
-
-                      prefixIcon:
-                          const Icon(
-                        Icons.lock,
-                      ),
-
-                      suffixIcon:
-                          IconButton(
+                      prefixIcon: const Icon(Icons.lock),
+                      suffixIcon: IconButton(
                         icon: Icon(
                           obscurePassword
                               ? Icons.visibility
-                              : Icons
-                                  .visibility_off,
+                              : Icons.visibility_off,
                         ),
-
                         onPressed: () {
                           setState(() {
-                            obscurePassword =
-                                !obscurePassword;
+                            obscurePassword = !obscurePassword;
                           });
                         },
                       ),
                     ),
-
                     onFieldSubmitted: (_) {
                       _login();
                     },
-
                     validator: (value) {
-                      if (value == null ||
-                          value.isEmpty) {
+                      if (value == null || value.isEmpty) {
                         return 'Password wajib diisi';
                       }
-
                       return null;
                     },
                   ),
@@ -205,65 +144,22 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 24),
 
                   FilledButton.icon(
-                    onPressed: isLoading
-                        ? null
-                        : _login,
-
+                    onPressed: isLoading ? null : _login,
                     icon: isLoading
                         ? const SizedBox(
                             width: 18,
                             height: 18,
-                            child:
-                                CircularProgressIndicator(
+                            child: CircularProgressIndicator(
                               strokeWidth: 2,
                             ),
                           )
-                        : const Icon(
-                            Icons.login,
-                          ),
-
+                        : const Icon(Icons.login),
                     label: Text(
-                      isLoading
-                          ? 'Memproses...'
-                          : 'Login',
+                      isLoading ? 'Memproses...' : 'Login',
                     ),
-
-                    style:
-                        FilledButton.styleFrom(
-                      padding:
-                          const EdgeInsets
-                              .symmetric(
+                    style: FilledButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
                         vertical: 14,
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  Card(
-                    child: Padding(
-                      padding:
-                          const EdgeInsets.all(16),
-
-                      child: Column(
-                        children: [
-                          const Text(
-                            'Akun Demo',
-                            style: TextStyle(
-                              fontWeight:
-                                  FontWeight.bold,
-                            ),
-                          ),
-
-                          const SizedBox(height: 8),
-
-                          Text(
-                            'Username: admin\n'
-                            'Password: admin123',
-                            textAlign:
-                                TextAlign.center,
-                          ),
-                        ],
                       ),
                     ),
                   ),

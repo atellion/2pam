@@ -5,24 +5,16 @@ class MembersPage extends StatelessWidget {
 
   final List<Map<String, String>> members = const [
     {
-      'name': 'Melani Bunga Cindya Pawesty',
-      'role': 'Project Manager',
+      'name': 'Melani Bunga Chintya Pawesty',
       'nim': '124240164',
     },
     {
-      'name': 'Anggota 2',
-      'role': 'UI/UX Designer',
-      'nim': '124240XXX',
+      'name': 'Naftali Margareta Gultom',
+      'nim': '124240119',
     },
     {
-      'name': 'Anggota 3',
-      'role': 'Programmer',
-      'nim': '124240XXX',
-    },
-    {
-      'name': 'Anggota 4',
-      'role': 'Database',
-      'nim': '124240XXX',
+      'name': 'Najmah Cleosa Vania Putri',
+      'nim': '124240119',
     },
   ];
 
@@ -68,7 +60,6 @@ class MembersPage extends StatelessWidget {
               subtitle: Padding(
                 padding: const EdgeInsets.only(top: 6),
                 child: Text(
-                  '${member['role']}\n'
                   'NIM: ${member['nim']}',
                 ),
               ),

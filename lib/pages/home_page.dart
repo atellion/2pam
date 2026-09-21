@@ -65,10 +65,22 @@ class _HomePageState extends State<HomePage> {
   Widget _buildHome() {
     final menus = [
       {
+        'title': 'Daftar Anggota',
+        'description': 'Data anggota aplikasi',
+        'icon': Icons.groups,
+        'page': const MembersPage(),
+      },
+      {
         'title': 'Konversi Tanggal',
         'description': 'Hijriah, Saka Bali, dan Weton',
         'icon': Icons.calendar_month,
         'page': const CalendarPage(),
+      },
+      {
+        'title': 'Hitung Umur',
+        'description': 'Hitung umur secara realtime',
+        'icon': Icons.cake,
+        'page': const ConversionPage(),
       },
       {
         'title': 'Cek Kecocokan',
@@ -77,22 +89,10 @@ class _HomePageState extends State<HomePage> {
         'page': const CompatibilityPage(),
       },
       {
-        'title': 'Daftar Anggota',
-        'description': 'Data anggota aplikasi',
-        'icon': Icons.groups,
-        'page': const MembersPage(),
-      },
-      {
         'title': 'Catatan / Agenda',
         'description': 'Tambah, edit, dan hapus agenda',
         'icon': Icons.event_note,
         'page': const EventsPage(),
-      },
-      {
-        'title': 'Hitung Umur',
-        'description': 'Hitung umur secara realtime',
-        'icon': Icons.cake,
-        'page': const ConversionPage(),
       },
     ];
 
@@ -104,78 +104,73 @@ class _HomePageState extends State<HomePage> {
             title: Text('Kalender & Asisten'),
           ),
 
-          SliverPadding(
-            padding: const EdgeInsets.all(16),
-
-            sliver: SliverGrid(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final menu = menus[index];
-
-                  return Card(
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(12),
-
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                menu['page'] as Widget,
-                          ),
-                        );
-                      },
-
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-
-                        child: Column(
-                          mainAxisAlignment:
-                              MainAxisAlignment.center,
-
-                          children: [
-                            Icon(
-                              menu['icon'] as IconData,
-                              size: 42,
-                            ),
-
-                            const SizedBox(height: 12),
-
-                            Text(
-                              menu['title'] as String,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 16,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    for (final menu in menus) ...[
+                      Card(
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    menu['page'] as Widget,
                               ),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  menu['icon'] as IconData,
+                                  size: 36,
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        menu['title'] as String,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        menu['description'] as String,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const Icon(
+                                  Icons.chevron_right,
+                                ),
+                              ],
                             ),
-
-                            const SizedBox(height: 6),
-
-                            Text(
-                              menu['description'] as String,
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall,
-                            ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
-
-                // Tetap 5 menu
-                childCount: menus.length,
-              ),
-
-              gridDelegate:
-                  const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 1.05,
+                      const SizedBox(height: 12),
+                    ],
+                  ],
+                ),
               ),
             ),
           ),
