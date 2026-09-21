@@ -25,11 +25,18 @@ class MembersPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Daftar Anggota'),
-        backgroundColor: Colors.transparent,
+        title: const Text(
+          'Daftar Anggota',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: AppColors.background,
         foregroundColor: AppColors.primaryDark,
         elevation: 0,
+        scrolledUnderElevation: 2,
+        shadowColor: AppColors.primaryDark.withValues(alpha: 0.15),
+        surfaceTintColor: Colors.transparent,
       ),
+      backgroundColor: AppColors.background,
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: members.length,

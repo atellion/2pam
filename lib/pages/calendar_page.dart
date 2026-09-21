@@ -203,11 +203,18 @@ class _CalendarPageState extends State<CalendarPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Konversi Tanggal'),
-        backgroundColor: Colors.transparent,
+        title: const Text(
+          'Konversi Tanggal',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: AppColors.background,
         foregroundColor: AppColors.primaryDark,
         elevation: 0,
+        scrolledUnderElevation: 2,
+        shadowColor: AppColors.primaryDark.withValues(alpha: 0.15),
+        surfaceTintColor: Colors.transparent,
       ),
+      backgroundColor: AppColors.background,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
