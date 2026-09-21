@@ -50,94 +50,49 @@ class _CalendarPageState extends State<CalendarPage> {
     });
   }
 
+    // ---------------------------------------------------------------------
+  // KONVERSI HIJRIAH
+  // Algoritma tabular Islamic Calendar ("Kuwaiti"), epoch sipil
+  // JD 1948440. Catatan: hasil tabular ini bisa beda ±1 hari dari
+  // kalender Hijriah resmi Kemenag (yang pakai rukyat + hisab).
+  // ---------------------------------------------------------------------
+
+  static const int _islamicEpochJd = 1948440;
+
+  static const List<String> _hijriMonths = [
+    'Muharram',
+    'Safar',
+    'Rabiul Awal',
+    'Rabiul Akhir',
+    'Jumadil Awal',
+    'Jumadil Akhir',
+    'Rajab',
+    'Syaaban',
+    'Ramadan',
+    'Syawal',
+    'Zulkaidah',
+    'Zulhijah',
+  ];
+
   String _convertToHijri(DateTime date) {
-    // Konversi kalender Hijriah tabular.
-    // Hasil perlu diverifikasi terhadap kalender Hijriah
-    // resmi apabila digunakan sebagai kalender keagamaan.
+    final jd = _gregorianToJulianDay(date);
 
-    final jd = _julianDay(date);
+    final hijriYear = (30 * (jd - _islamicEpochJd) + 10646) ~/ 10631;
 
-    final l = jd + 68569;
-    final n = (4 * l ~/ 146097);
-    final l2 = l - (146097 * n + 3) ~/ 4;
-    final i = 4000 * (l2 + 1) ~/ 1461001;
-    final l3 = l2 - 1461 * i ~/ 4 + 31;
-    final j = 80 * l3 ~/ 2447;
-    final day = l3 - 2447 * j ~/ 80;
-    final l4 = j ~/ 11;
-    final month = j + 2 - 12 * l4;
-    final year = 100 * (n - 49) + i + l4;
+    final startOfYear = _hijriToJulianDay(hijriYear, 1, 1);
+    var hijriMonth = ((jd - (29 + startOfYear)) / 29.5).ceil() + 1;
+    if (hijriMonth > 12) hijriMonth = 12;
+    if (hijriMonth < 1) hijriMonth = 1;
 
-    // Julian Day Masehi -> Hijriah
-    final jd2 = jd.floor();
+    final hijriDay = jd - _hijriToJulianDay(hijriYear, hijriMonth, 1) + 1;
 
-    final islamicEpoch = 1948439;
-    final hijriYear = ((30 * (jd2 - islamicEpoch) + 10646) ~/ 10631);
-
-    final hijriMonth = ((jd2 -
-                    (29 +
-                        _islamicToJulianDay(
-                          hijriYear,
-                          1,
-                          1,
-                        ))) ~/
-                29.5)
-            .floor() +
-        1;
-
-    final monthValue = hijriMonth.clamp(1, 12);
-
-    final hijriDay = jd2 -
-        _islamicToJulianDay(
-          hijriYear,
-          monthValue,
-          1,
-        ) +
-        1;
-
-    final months = [
-      'Muharram',
-      'Safar',
-      'Rabiul Awal',
-      'Rabiul Akhir',
-      'Jumadil Awal',
-      'Jumadil Akhir',
-      'Rajab',
-      'Syaaban',
-      'Ramadan',
-      'Syawal',
-      'Zulkaidah',
-      'Zulhijah',
-    ];
-
-    // Variabel Masehi di atas sengaja dihitung untuk menjaga
-    // algoritma Julian Day tetap konsisten.
-    // ignore: unused_local_variable
-    final _ = l;
-    // ignore: unused_local_variable
-    final __ = n;
-    // ignore: unused_local_variable
-    final ___ = l2;
-    // ignore: unused_local_variable
-    final ____ = i;
-    // ignore: unused_local_variable
-    final _____ = l3;
-    // ignore: unused_local_variable
-    final ______ = j;
-    // ignore: unused_local_variable
-    final _______ = day;
-    // ignore: unused_local_variable
-    final ________ = month;
-    // ignore: unused_local_variable
-    final _________ = year;
-
-    return '$hijriDay ${months[monthValue - 1]} $hijriYear H';
+    return '$hijriDay ${_hijriMonths[hijriMonth - 1]} $hijriYear H';
   }
 
-  int _julianDay(DateTime date) {
-    int a = (14 - date.month) ~/ 12;
-    int y = date.year + 4800 - a;
-    int m = date.month + 12 * a - 3;
+  int _gregorianToJulianDay(DateTime date) {
+    final a = (14 - date.month) ~/ 12;
+    final y = date.year + 4800 - a;
+    final m = date.month + 12 * a - 3;
 
     return date.day +
         ((153 * m + 2) ~/ 5) +
@@ -148,25 +103,99 @@ class _CalendarPageState extends State<CalendarPage> {
         32045;
   }
 
-  int _islamicToJulianDay(
-    int year,
-    int month,
-    int day,
-  ) {
-    return (day +
-        ((29.5 * (month - 1)).ceil()) +
+  int _hijriToJulianDay(int year, int month, int day) {
+    return day +
+        (29.5 * (month - 1)).ceil() +
         (year - 1) * 354 +
         ((3 + 11 * year) ~/ 30) +
-        1948439 -
-        1);
+        _islamicEpochJd -
+        1;
   }
+
+  // ---------------------------------------------------------------------
+  // KONVERSI KALENDER BALI (SAKA)
+  // Sasih (bulan candra) TIDAK dihitung -- butuh astronomi bulan,
+  // di luar cakupan tugas ini.
+  // ---------------------------------------------------------------------
 
   String _convertToSakaBali(DateTime date) {
-    final sakaYear = date.year - 78;
+    final sakaYear = _getSakaYear(date);
+    final saptawara = _saptawaraBali[date.weekday - 1];
+    final pancawara = _pancawaraBali(date);
+    final wuku = _getWuku(date);
 
-    return 'Saka $sakaYear';
+    return 'Saka $sakaYear • $saptawara $pancawara • Wuku $wuku';
   }
 
+  static final Map<int, DateTime> _nyepiDates = {
+    2020: DateTime(2020, 3, 25),
+    2021: DateTime(2021, 3, 14),
+    2022: DateTime(2022, 3, 3),
+    2023: DateTime(2023, 3, 22),
+    2024: DateTime(2024, 3, 11),
+    2025: DateTime(2025, 3, 29),
+    2026: DateTime(2026, 3, 19),
+  };
+
+  int _getSakaYear(DateTime date) {
+    final knownNyepi = _nyepiDates[date.year];
+    final nyepi = knownNyepi ?? DateTime(date.year, 3, 21);
+    return date.isBefore(nyepi) ? date.year - 79 : date.year - 78;
+  }
+
+  static const List<String> _wukuNames = [
+    'Sinta', 'Landep', 'Ukir', 'Kulantir', 'Tolu', 'Gumbreg',
+    'Wariga', 'Warigadean', 'Julungwangi', 'Sungsang', 'Dungulan',
+    'Kuningan', 'Langkir', 'Medangsia', 'Pujut', 'Pahang', 'Krulut',
+    'Merakih', 'Tambir', 'Medangkungan', 'Matal', 'Uye', 'Menail',
+    'Prangbakat', 'Bala', 'Ugu', 'Wayang', 'Kelawu', 'Dukut',
+    'Watugunung',
+  ];
+
+  static final DateTime _wukuReferenceDate = DateTime(2024, 12, 29);
+  static const int _wukuReferenceIndex = 24; // Bala
+
+  String _getWuku(DateTime date) {
+    final daysDiff = date.difference(_wukuReferenceDate).inDays;
+    final weekDiff = _floorDiv(daysDiff, 7);
+    final index = (_wukuReferenceIndex + weekDiff) % _wukuNames.length;
+    final fixedIndex = index < 0 ? index + _wukuNames.length : index;
+
+    return _wukuNames[fixedIndex];
+  }
+
+  int _floorDiv(int a, int b) {
+    final q = a ~/ b;
+    final r = a - q * b;
+    if (r != 0 && (r < 0) != (b < 0)) {
+      return q - 1;
+    }
+    return q;
+  }
+
+  static const Map<String, String> _pasaranJawaToBali = {
+    'Legi': 'Umanis',
+    'Pahing': 'Paing',
+    'Pon': 'Pon',
+    'Wage': 'Wage',
+    'Kliwon': 'Kliwon',
+  };
+
+  String _pancawaraBali(DateTime date) {
+    final pasaranJawa = WetonService.getWeton(date).split(' ').last;
+    return _pasaranJawaToBali[pasaranJawa] ?? '-';
+  }
+
+  static const List<String> _saptawaraBali = [
+    'Soma', // Senin
+    'Anggara', // Selasa
+    'Buda', // Rabu
+    'Wraspati', // Kamis
+    'Sukra', // Jumat
+    'Saniscara', // Sabtu
+    'Redite', // Minggu
+  ];
+  
   @override
   Widget build(BuildContext context) {
     final formattedDate =
