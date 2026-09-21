@@ -24,7 +24,6 @@ class MembersPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Daftar Anggota'),
       ),
-
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: members.length,
@@ -33,30 +32,24 @@ class MembersPage extends StatelessWidget {
 
           return Card(
             margin: const EdgeInsets.only(bottom: 12),
-
             child: ListTile(
               contentPadding: const EdgeInsets.all(16),
-
               leading: CircleAvatar(
                 radius: 28,
                 child: Text(
-                  member['name']!
-                      .substring(0, 1)
-                      .toUpperCase(),
+                  member['name']!.substring(0, 1).toUpperCase(),
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-
               title: Text(
                 member['name']!,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
               ),
-
               subtitle: Padding(
                 padding: const EdgeInsets.only(top: 6),
                 child: Text(
