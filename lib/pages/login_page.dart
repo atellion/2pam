@@ -43,8 +43,6 @@ class _LoginPageState extends State<LoginPage> {
         email: emailController.text.trim(),
         password: passwordController.text,
       );
-      // Tidak perlu widget.onLogin() manual, StreamBuilder di AppGate
-      // akan otomatis pindah ke HomePage saat status auth berubah.
     } on AuthException catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

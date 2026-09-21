@@ -50,12 +50,7 @@ class _CalendarPageState extends State<CalendarPage> {
     });
   }
 
-    // ---------------------------------------------------------------------
-  // KONVERSI HIJRIAH
-  // Algoritma tabular Islamic Calendar ("Kuwaiti"), epoch sipil
-  // JD 1948440. Catatan: hasil tabular ini bisa beda ±1 hari dari
-  // kalender Hijriah resmi Kemenag (yang pakai rukyat + hisab).
-  // ---------------------------------------------------------------------
+    // KONVERSI HIJRIAH
 
   static const int _islamicEpochJd = 1948440;
 
@@ -112,11 +107,8 @@ class _CalendarPageState extends State<CalendarPage> {
         1;
   }
 
-  // ---------------------------------------------------------------------
   // KONVERSI KALENDER BALI (SAKA)
   // Sasih (bulan candra) TIDAK dihitung -- butuh astronomi bulan,
-  // di luar cakupan tugas ini.
-  // ---------------------------------------------------------------------
 
   String _convertToSakaBali(DateTime date) {
     final sakaYear = _getSakaYear(date);
