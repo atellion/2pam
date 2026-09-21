@@ -83,11 +83,18 @@ class _StopwatchPageState extends State<StopwatchPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Stopwatch'),
-        backgroundColor: Colors.transparent,
+        title: const Text(
+          'Stopwatch',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: AppColors.background,
         foregroundColor: AppColors.primaryDark,
         elevation: 0,
+        scrolledUnderElevation: 2,
+        shadowColor: AppColors.primaryDark.withValues(alpha: 0.15),
+        surfaceTintColor: Colors.transparent,
       ),
+      backgroundColor: AppColors.background,
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
