@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/app_colors.dart';
+import '../widgets/glass_card.dart';
 import 'calendar_page.dart';
 import 'compatibility_page.dart';
 import 'members_page.dart';
@@ -99,80 +101,122 @@ class _HomePageState extends State<HomePage> {
     return SafeArea(
       child: CustomScrollView(
         slivers: [
-          const SliverAppBar(
+          SliverAppBar(
             pinned: true,
-            title: Text('Kalender & Asisten'),
+            title: const Text('Kalender & Asisten'),
+            backgroundColor: Colors.transparent,
+            foregroundColor: AppColors.primaryDark,
+            elevation: 0,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.account_circle, size: 28),
+                onPressed: () {},
+                color: AppColors.textLight,
+              ),
+            ],
           ),
-
-          SliverFillRemaining(
-            hasScrollBody: false,
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 16,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    for (final menu in menus) ...[
-                      Card(
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(12),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    menu['page'] as Widget,
-                              ),
-                            );
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  menu['icon'] as IconData,
-                                  size: 36,
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        menu['title'] as String,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        menu['description'] as String,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const Icon(
-                                  Icons.chevron_right,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                    ],
-                  ],
-                ),
+          
+          // Header Greetings
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Halo, Selamat Datang',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: AppColors.textLight,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Temukan segala kebutuhan penanggalanmu disini.',
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primaryDark,
+                      height: 1.2,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                ],
               ),
             ),
+          ),
+
+          // Menu Grid
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            sliver: SliverGrid(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+                childAspectRatio: 0.95,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  final menu = menus[index];
+                  return GlassCard(
+                    padding: const EdgeInsets.all(16),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => menu['page'] as Widget,
+                        ),
+                      );
+                    },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withOpacity(0.2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            menu['icon'] as IconData,
+                            size: 28,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        const Spacer(),
+                        Text(
+                          menu['title'] as String,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: AppColors.primaryDark,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          menu['description'] as String,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.textLight,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                childCount: menus.length,
+              ),
+            ),
+          ),
+          
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 32),
           ),
         ],
       ),

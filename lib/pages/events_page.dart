@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../main.dart';
+import '../utils/app_colors.dart';
+import '../widgets/glass_card.dart';
 
 class EventsPage extends StatefulWidget {
   const EventsPage({super.key});
@@ -307,11 +309,15 @@ class _EventsPageState extends State<EventsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Catatan / Agenda'),
+        backgroundColor: Colors.transparent,
+        foregroundColor: AppColors.primaryDark,
+        elevation: 0,
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _addEvent,
-        icon: const Icon(Icons.add),
-        label: const Text('Tambah'),
+        icon: const Icon(Icons.add, color: AppColors.primaryDark),
+        label: const Text('Tambah', style: TextStyle(color: AppColors.primaryDark, fontWeight: FontWeight.bold)),
+        backgroundColor: AppColors.primary,
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -320,18 +326,20 @@ class _EventsPageState extends State<EventsPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.event_note, size: 70),
+                      Icon(Icons.event_note, size: 70, color: AppColors.textLight),
                       SizedBox(height: 12),
                       Text(
                         'Belum ada agenda',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
+                          color: AppColors.primaryDark,
                         ),
                       ),
                       SizedBox(height: 6),
                       Text(
                         'Tekan tombol Tambah untuk membuat agenda.',
+                        style: TextStyle(color: AppColors.textMain),
                       ),
                     ],
                   ),
@@ -345,17 +353,21 @@ class _EventsPageState extends State<EventsPage> {
                       final event = events[index];
                       final date = DateTime.parse(event['event_date']);
 
-                      return Card(
+                      return GlassCard(
                         margin: const EdgeInsets.only(bottom: 12),
+                        padding: const EdgeInsets.all(8),
                         child: ListTile(
                           contentPadding: const EdgeInsets.all(16),
-                          leading: const CircleAvatar(
-                            child: Icon(Icons.event),
+                          leading: CircleAvatar(
+                            backgroundColor: AppColors.primary.withOpacity(0.2),
+                            foregroundColor: AppColors.primary,
+                            child: const Icon(Icons.event),
                           ),
                           title: Text(
                             event['title'] ?? '',
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
+                              color: AppColors.primaryDark,
                             ),
                           ),
                           subtitle: Padding(
@@ -363,9 +375,11 @@ class _EventsPageState extends State<EventsPage> {
                             child: Text(
                               '${_formatDate(date)}\n'
                               '${event['description'] ?? ''}',
+                              style: const TextStyle(color: AppColors.textLight),
                             ),
                           ),
                           trailing: PopupMenuButton(
+                            iconColor: AppColors.primaryDark,
                             itemBuilder: (context) => [
                               const PopupMenuItem(
                                 value: 'edit',

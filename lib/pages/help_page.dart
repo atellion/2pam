@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../services/session_service.dart';
+import '../utils/app_colors.dart';
+import '../widgets/glass_card.dart';
 
 class HelpPage extends StatelessWidget {
   final VoidCallback onLogout;
@@ -55,20 +57,28 @@ class HelpPage extends StatelessWidget {
     required String title,
     required String description,
   }) {
-    return Card(
+    return GlassCard(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(8),
       child: ListTile(
         leading: CircleAvatar(
+          backgroundColor: AppColors.primary.withOpacity(0.2),
+          foregroundColor: AppColors.primary,
           child: Icon(icon),
         ),
         title: Text(
           title,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
+            color: AppColors.primaryDark,
           ),
         ),
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 4),
-          child: Text(description),
+          child: Text(
+            description,
+            style: const TextStyle(color: AppColors.textLight),
+          ),
         ),
       ),
     );
@@ -79,142 +89,122 @@ class HelpPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Bantuan'),
+        backgroundColor: Colors.transparent,
+        foregroundColor: AppColors.primaryDark,
+        elevation: 0,
       ),
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
-
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-
-                child: Column(
-                  children: [
-                    const Icon(
-                      Icons.calendar_month,
-                      size: 70,
+            GlassCard(
+              child: Column(
+                children: [
+                  const Icon(
+                    Icons.calendar_month,
+                    size: 70,
+                    color: AppColors.primary,
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'Kalender & Asisten',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primaryDark,
                     ),
-
-                    const SizedBox(height: 12),
-
-                    const Text(
-                      'Kalender & Asisten',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-
-                    const SizedBox(height: 8),
-
-                    const Text(
-                      'Aplikasi untuk membantu perhitungan '
-                      'tanggal, weton, kecocokan, agenda, '
-                      'dan umur.',
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Aplikasi untuk membantu perhitungan '
+                    'tanggal, weton, kecocokan, agenda, '
+                    'dan umur.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: AppColors.textMain),
+                  ),
+                ],
               ),
             ),
-
             const SizedBox(height: 16),
-
             const Text(
               'Panduan Menu',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
+                color: AppColors.primaryDark,
               ),
             ),
-
             const SizedBox(height: 12),
-
             _buildHelpItem(
               icon: Icons.calendar_month,
               title: 'Konversi Tanggal',
-              description:
-                  'Pilih tanggal untuk melihat '
+              description: 'Pilih tanggal untuk melihat '
                   'informasi Masehi, Hijriah, '
                   'Saka Bali, dan Weton.',
             ),
-
             _buildHelpItem(
               icon: Icons.favorite,
               title: 'Cek Kecocokan',
-              description:
-                  'Masukkan dua tanggal lahir '
+              description: 'Masukkan dua tanggal lahir '
                   'untuk menghitung weton, neptu, '
                   'dan kategori kecocokan.',
             ),
-
             _buildHelpItem(
               icon: Icons.groups,
               title: 'Daftar Anggota',
-              description:
-                  'Menampilkan data anggota '
+              description: 'Menampilkan data anggota '
                   'yang menggunakan aplikasi.',
             ),
-
             _buildHelpItem(
               icon: Icons.event_note,
               title: 'Catatan / Agenda',
-              description:
-                  'Gunakan fitur ini untuk '
+              description: 'Gunakan fitur ini untuk '
                   'menambah, melihat, mengubah, '
                   'dan menghapus agenda.',
             ),
-
             _buildHelpItem(
               icon: Icons.cake,
               title: 'Hitung Umur',
-              description:
-                  'Masukkan tanggal lahir untuk '
+              description: 'Masukkan tanggal lahir untuk '
                   'menghitung umur berdasarkan '
                   'waktu perangkat secara realtime.',
             ),
-
             _buildHelpItem(
               icon: Icons.timer,
               title: 'Stopwatch',
-              description:
-                  'Gunakan stopwatch untuk '
+              description: 'Gunakan stopwatch untuk '
                   'mengukur durasi waktu dengan '
                   'fitur Start, Pause, dan Reset.',
             ),
-
             const SizedBox(height: 24),
-
             const Divider(),
-
             const SizedBox(height: 16),
-
             const Text(
               'Akun',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
+                color: AppColors.primaryDark,
               ),
             ),
-
             const SizedBox(height: 12),
-
             OutlinedButton.icon(
               onPressed: () => _logout(context),
-              icon: const Icon(Icons.logout),
-              label: const Text('Logout'),
+              icon: const Icon(Icons.logout, color: AppColors.primary),
+              label: const Text('Logout',
+                  style: TextStyle(color: AppColors.primary)),
               style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: AppColors.primary),
                 padding: const EdgeInsets.symmetric(
                   vertical: 14,
                 ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
               ),
             ),
-
             const SizedBox(height: 20),
-
             const Text(
               'Kalender & Asisten v1.0',
               textAlign: TextAlign.center,

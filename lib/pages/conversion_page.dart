@@ -2,12 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../utils/app_colors.dart';
+import '../widgets/glass_card.dart';
+
 class ConversionPage extends StatefulWidget {
   const ConversionPage({super.key});
 
   @override
-  State<ConversionPage> createState() =>
-      _ConversionPageState();
+  State<ConversionPage> createState() => _ConversionPageState();
 }
 
 class _ConversionPageState extends State<ConversionPage> {
@@ -118,188 +120,159 @@ class _ConversionPageState extends State<ConversionPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Hitung Umur'),
+        backgroundColor: Colors.transparent,
+        foregroundColor: AppColors.primaryDark,
+        elevation: 0,
       ),
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
-
         child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-
+            GlassCard(
+              onTap: _pickBirthDate, // Membuatnya interaktif saat ditekan
+              child: Column(
+                children: [
+                  const Icon(
+                    Icons.cake,
+                    size: 60,
+                    color: AppColors.primary,
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'Hitung Umur',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primaryDark,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Pilih tanggal lahir. '
+                    'Waktu sekarang akan mengikuti '
+                    'waktu perangkat secara realtime.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: AppColors.textMain),
+                  ),
+                  const SizedBox(height: 20),
+                  OutlinedButton.icon(
+                    onPressed: _pickBirthDate,
+                    icon: const Icon(
+                      Icons.calendar_month,
+                      color: AppColors.primary,
+                    ),
+                    label: Text(
+                      birthDate == null
+                          ? 'Pilih Tanggal Lahir'
+                          : _formatDate(
+                              birthDate!,
+                            ),
+                      style: const TextStyle(color: AppColors.primary),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: AppColors.primary),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            if (birthDate != null && age != null && duration != null) ...[
+              GlassCard(
                 child: Column(
                   children: [
-                    const Icon(
-                      Icons.cake,
-                      size: 60,
-                    ),
-
-                    const SizedBox(height: 12),
-
                     const Text(
-                      'Hitung Umur',
+                      'Umur Saat Ini',
                       style: TextStyle(
-                        fontSize: 22,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
+                        color: AppColors.primaryDark,
                       ),
                     ),
-
-                    const SizedBox(height: 8),
-
-                    const Text(
-                      'Pilih tanggal lahir. '
-                      'Waktu sekarang akan mengikuti '
-                      'waktu perangkat secara realtime.',
-                      textAlign: TextAlign.center,
-                    ),
-
                     const SizedBox(height: 20),
-
-                    OutlinedButton.icon(
-                      onPressed: _pickBirthDate,
-                      icon: const Icon(
-                        Icons.calendar_month,
-                      ),
-                      label: Text(
-                        birthDate == null
-                            ? 'Pilih Tanggal Lahir'
-                            : _formatDate(
-                                birthDate!,
-                              ),
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _ageItem(
+                          age['years']!,
+                          'Tahun',
+                        ),
+                        _ageItem(
+                          age['months']!,
+                          'Bulan',
+                        ),
+                        _ageItem(
+                          age['days']!,
+                          'Hari',
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
-            ),
-
-            const SizedBox(height: 16),
-
-            if (birthDate != null &&
-                age != null &&
-                duration != null) ...[
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-
-                  child: Column(
-                    children: [
-                      const Text(
-                        'Umur Saat Ini',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+              const SizedBox(height: 16),
+              GlassCard(
+                child: Column(
+                  children: [
+                    const Text(
+                      'Total Waktu Hidup',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primaryDark,
                       ),
-
-                      const SizedBox(height: 20),
-
-                      Row(
-                        mainAxisAlignment:
-                            MainAxisAlignment.spaceEvenly,
-                        children: [
-                          _ageItem(
-                            age['years']!,
-                            'Tahun',
-                          ),
-                          _ageItem(
-                            age['months']!,
-                            'Bulan',
-                          ),
-                          _ageItem(
-                            age['days']!,
-                            'Hari',
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 20),
+                    _durationItem(
+                      Icons.calendar_today,
+                      'Total Hari',
+                      duration.inDays.toString(),
+                    ),
+                    _durationItem(
+                      Icons.access_time,
+                      'Total Jam',
+                      duration.inHours.toString(),
+                    ),
+                    _durationItem(
+                      Icons.timer,
+                      'Total Menit',
+                      duration.inMinutes.toString(),
+                    ),
+                    _durationItem(
+                      Icons.timer_outlined,
+                      'Total Detik',
+                      duration.inSeconds.toString(),
+                    ),
+                  ],
                 ),
               ),
-
               const SizedBox(height: 16),
-
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-
-                  child: Column(
-                    children: [
-                      const Text(
-                        'Total Waktu Hidup',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+              GlassCard(
+                child: Column(
+                  children: [
+                    const Text(
+                      'Waktu Sekarang',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primaryDark,
                       ),
-
-                      const SizedBox(height: 20),
-
-                      _durationItem(
-                        Icons.calendar_today,
-                        'Total Hari',
-                        duration.inDays
-                            .toString(),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '${_formatDate(currentTime)} '
+                      '${currentTime.hour.toString().padLeft(2, '0')}:'
+                      '${currentTime.minute.toString().padLeft(2, '0')}:'
+                      '${currentTime.second.toString().padLeft(2, '0')}',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        color: AppColors.textMain,
                       ),
-
-                      _durationItem(
-                        Icons.access_time,
-                        'Total Jam',
-                        duration.inHours
-                            .toString(),
-                      ),
-
-                      _durationItem(
-                        Icons.timer,
-                        'Total Menit',
-                        duration.inMinutes
-                            .toString(),
-                      ),
-
-                      _durationItem(
-                        Icons.timer_outlined,
-                        'Total Detik',
-                        duration.inSeconds
-                            .toString(),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-
-                  child: Column(
-                    children: [
-                      const Text(
-                        'Waktu Sekarang',
-                        style: TextStyle(
-                          fontWeight:
-                              FontWeight.bold,
-                        ),
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      Text(
-                        '${_formatDate(currentTime)} '
-                        '${currentTime.hour.toString().padLeft(2, '0')}:'
-                        '${currentTime.minute.toString().padLeft(2, '0')}:'
-                        '${currentTime.second.toString().padLeft(2, '0')}',
-                        style: const TextStyle(
-                          fontSize: 18,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -320,9 +293,13 @@ class _ConversionPageState extends State<ConversionPage> {
           style: const TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.bold,
+            color: AppColors.primary,
           ),
         ),
-        Text(label),
+        Text(
+          label,
+          style: const TextStyle(color: AppColors.textMain),
+        ),
       ],
     );
   }
@@ -336,21 +313,21 @@ class _ConversionPageState extends State<ConversionPage> {
       padding: const EdgeInsets.symmetric(
         vertical: 8,
       ),
-
       child: Row(
         children: [
-          Icon(icon),
-
+          Icon(icon, color: AppColors.primary),
           const SizedBox(width: 12),
-
           Expanded(
-            child: Text(label),
+            child: Text(
+              label,
+              style: const TextStyle(color: AppColors.textMain),
+            ),
           ),
-
           Text(
             value,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
+              color: AppColors.primaryDark,
             ),
           ),
         ],

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../services/weton_service.dart';
+import '../utils/app_colors.dart';
+import '../widgets/glass_card.dart';
 
 class CompatibilityPage extends StatefulWidget {
   const CompatibilityPage({super.key});
@@ -156,41 +159,51 @@ class _CompatibilityPageState extends State<CompatibilityPage> {
     required DateTime? date,
     required VoidCallback onPressed,
   }) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+    return GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: AppColors.primaryDark,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Tanggal lahir: ${_formatDate(date)}',
+            style: const TextStyle(color: AppColors.textLight),
+          ),
+          const SizedBox(height: 12),
+          OutlinedButton.icon(
+            onPressed: onPressed,
+            icon: const Icon(Icons.calendar_month, color: AppColors.primary),
+            label: const Text(
+              'Pilih Tanggal',
+              style: TextStyle(color: AppColors.primary),
+            ),
+            style: OutlinedButton.styleFrom(
+              side: const BorderSide(color: AppColors.primary),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+            ),
+          ),
+          if (date != null) ...[
+            const Divider(height: 24, color: AppColors.primaryDark),
             Text(
-              title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              'Weton: ${WetonService.getWeton(date)}',
+              style: const TextStyle(color: AppColors.textMain),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 6),
             Text(
-              'Tanggal lahir: ${_formatDate(date)}',
+              'Neptu: ${WetonService.getTotalNeptu(date)}',
+              style: const TextStyle(color: AppColors.textMain),
             ),
-            const SizedBox(height: 12),
-            OutlinedButton.icon(
-              onPressed: onPressed,
-              icon: const Icon(Icons.calendar_month),
-              label: const Text('Pilih Tanggal'),
-            ),
-            if (date != null) ...[
-              const Divider(height: 24),
-              Text(
-                'Weton: ${WetonService.getWeton(date)}',
-              ),
-              const SizedBox(height: 6),
-              Text(
-                'Neptu: ${WetonService.getTotalNeptu(date)}',
-              ),
-            ],
           ],
-        ),
+        ],
       ),
     );
   }
@@ -200,6 +213,9 @@ class _CompatibilityPageState extends State<CompatibilityPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Cek Kecocokan'),
+        backgroundColor: Colors.transparent,
+        foregroundColor: AppColors.primaryDark,
+        elevation: 0,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -209,7 +225,7 @@ class _CompatibilityPageState extends State<CompatibilityPage> {
             const Text(
               'Masukkan dua tanggal lahir untuk '
               'melihat perhitungan weton dan neptu.',
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 16, color: AppColors.textMain),
             ),
             const SizedBox(height: 16),
             _personCard(
@@ -226,85 +242,95 @@ class _CompatibilityPageState extends State<CompatibilityPage> {
             const SizedBox(height: 20),
             FilledButton.icon(
               onPressed: _calculateCompatibility,
-              icon: const Icon(Icons.favorite),
+              icon: const Icon(Icons.favorite, color: AppColors.primaryDark),
               label: const Text(
                 'Hitung Kecocokan',
+                style: TextStyle(
+                    color: AppColors.primaryDark, fontWeight: FontWeight.bold),
+              ),
+              style: FilledButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
               ),
             ),
             if (result != null) ...[
               const SizedBox(height: 20),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      const Icon(
-                        Icons.favorite,
-                        size: 50,
+              GlassCard(
+                child: Column(
+                  children: [
+                    const Icon(
+                      Icons.favorite,
+                      size: 50,
+                      color: AppColors.primary,
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Hasil Perhitungan',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primaryDark,
                       ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      result!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 17,
+                        color: AppColors.textMain,
+                      ),
+                    ),
+                    if (matchStatus != null) ...[
                       const SizedBox(height: 12),
-                      const Text(
-                        'Hasil Perhitungan',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: matchStatus == 'Cocok'
+                              ? Colors.green.withOpacity(0.2)
+                              : matchStatus == 'Netral'
+                                  ? Colors.orange.withOpacity(0.2)
+                                  : Colors.red.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          matchStatus!,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: matchStatus == 'Cocok'
+                                ? Colors.green[300]
+                                : matchStatus == 'Netral'
+                                    ? Colors.orange[300]
+                                    : Colors.red[300],
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 10),
                       Text(
-                        result!,
+                        matchDescription ?? '',
                         textAlign: TextAlign.center,
                         style: const TextStyle(
-                          fontSize: 17,
+                          fontSize: 14,
+                          color: AppColors.textLight,
                         ),
-                      ),
-                      if (matchStatus != null) ...[
-                        const SizedBox(height: 12),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: matchStatus == 'Cocok'
-                                ? Colors.green.withOpacity(0.15)
-                                : matchStatus == 'Netral'
-                                    ? Colors.orange.withOpacity(0.15)
-                                    : Colors.red.withOpacity(0.15),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            matchStatus!,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: matchStatus == 'Cocok'
-                                  ? Colors.green[800]
-                                  : matchStatus == 'Netral'
-                                      ? Colors.orange[800]
-                                      : Colors.red[800],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          matchDescription ?? '',
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ],
-                      const SizedBox(height: 16),
-                      Text(
-                        'Neptu total: '
-                        '${WetonService.getTotalNeptu(firstDate!)} + '
-                        '${WetonService.getTotalNeptu(secondDate!)} = '
-                        '${WetonService.getTotalNeptu(firstDate!) + WetonService.getTotalNeptu(secondDate!)}',
-                        textAlign: TextAlign.center,
                       ),
                     ],
-                  ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Neptu total: '
+                      '${WetonService.getTotalNeptu(firstDate!)} + '
+                      '${WetonService.getTotalNeptu(secondDate!)} = '
+                      '${WetonService.getTotalNeptu(firstDate!) + WetonService.getTotalNeptu(secondDate!)}',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: AppColors.textMain),
+                    ),
+                  ],
                 ),
               ),
             ],
