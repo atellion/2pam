@@ -162,18 +162,6 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   String _convertToSakaBali(DateTime date) {
-    /*
-      Catatan:
-      Kalender Saka Bali tidak cukup dihitung hanya dengan
-      date.year - 78 karena penanggalannya mengikuti sistem
-      sasih dan aturan kalender Bali.
-
-      Untuk sementara halaman menyediakan struktur output
-      Saka Bali. Algoritma Saka Bali yang digunakan nantinya
-      perlu disesuaikan dengan sumber/standar kalender Bali
-      yang dipakai dalam tugas.
-    */
-
     final sakaYear = date.year - 78;
 
     return 'Saka $sakaYear';
