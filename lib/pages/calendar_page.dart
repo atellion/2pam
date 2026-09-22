@@ -50,7 +50,7 @@ class _CalendarPageState extends State<CalendarPage> {
     });
   }
 
-    // ---------------------------------------------------------------------
+  // ---------------------------------------------------------------------
   // KONVERSI HIJRIAH
   // Algoritma tabular Islamic Calendar ("Kuwaiti"), epoch sipil
   // JD 1948440. Catatan: hasil tabular ini bisa beda ±1 hari dari
@@ -144,11 +144,35 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   static const List<String> _wukuNames = [
-    'Sinta', 'Landep', 'Ukir', 'Kulantir', 'Tolu', 'Gumbreg',
-    'Wariga', 'Warigadean', 'Julungwangi', 'Sungsang', 'Dungulan',
-    'Kuningan', 'Langkir', 'Medangsia', 'Pujut', 'Pahang', 'Krulut',
-    'Merakih', 'Tambir', 'Medangkungan', 'Matal', 'Uye', 'Menail',
-    'Prangbakat', 'Bala', 'Ugu', 'Wayang', 'Kelawu', 'Dukut',
+    'Sinta',
+    'Landep',
+    'Ukir',
+    'Kulantir',
+    'Tolu',
+    'Gumbreg',
+    'Wariga',
+    'Warigadean',
+    'Julungwangi',
+    'Sungsang',
+    'Dungulan',
+    'Kuningan',
+    'Langkir',
+    'Medangsia',
+    'Pujut',
+    'Pahang',
+    'Krulut',
+    'Merakih',
+    'Tambir',
+    'Medangkungan',
+    'Matal',
+    'Uye',
+    'Menail',
+    'Prangbakat',
+    'Bala',
+    'Ugu',
+    'Wayang',
+    'Kelawu',
+    'Dukut',
     'Watugunung',
   ];
 
@@ -195,7 +219,7 @@ class _CalendarPageState extends State<CalendarPage> {
     'Saniscara', // Sabtu
     'Redite', // Minggu
   ];
-  
+
   @override
   Widget build(BuildContext context) {
     final formattedDate =
