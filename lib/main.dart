@@ -44,14 +44,31 @@ class KalenderAsistenApp extends StatelessWidget {
           elevation: 0,
         ),
         navigationBarTheme: NavigationBarThemeData(
-          backgroundColor: AppColors.primaryDark.withOpacity(0.9),
-          indicatorColor: AppColors.primary.withOpacity(0.5),
-          labelTextStyle: MaterialStateProperty.all(
-            const TextStyle(color: AppColors.surfaceWhite, fontSize: 12),
+          backgroundColor: AppColors.surfaceWhite,
+          elevation: 8,
+          shadowColor: AppColors.primaryDark.withValues(alpha: 0.15),
+          surfaceTintColor: Colors.transparent,
+          height: 68,
+          indicatorColor: AppColors.primary.withValues(alpha: 0.2),
+          indicatorShape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
           ),
-          iconTheme: MaterialStateProperty.all(
-            const IconThemeData(color: AppColors.surfaceWhite),
-          ),
+          labelTextStyle: WidgetStateProperty.resolveWith((states) {
+            final selected = states.contains(WidgetState.selected);
+            return TextStyle(
+              fontSize: 12,
+              fontWeight: selected ? FontWeight.bold : FontWeight.w500,
+              color: selected
+                  ? AppColors.primaryDark
+                  : AppColors.textLight,
+            );
+          }),
+          iconTheme: WidgetStateProperty.resolveWith((states) {
+            final selected = states.contains(WidgetState.selected);
+            return IconThemeData(
+              color: selected ? AppColors.primaryDark : AppColors.textLight,
+            );
+          }),
         ),
         inputDecorationTheme: InputDecorationTheme(
           border: OutlineInputBorder(

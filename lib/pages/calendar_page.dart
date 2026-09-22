@@ -50,12 +50,16 @@ class _CalendarPageState extends State<CalendarPage> {
     });
   }
 
+<<<<<<< HEAD
   // ---------------------------------------------------------------------
   // KONVERSI HIJRIAH
   // Algoritma tabular Islamic Calendar ("Kuwaiti"), epoch sipil
   // JD 1948440. Catatan: hasil tabular ini bisa beda ±1 hari dari
   // kalender Hijriah resmi Kemenag (yang pakai rukyat + hisab).
   // ---------------------------------------------------------------------
+=======
+    // KONVERSI HIJRIAH
+>>>>>>> 4d1865e39e8995637ba5c277bbd7a86edb0dac37
 
   static const int _islamicEpochJd = 1948440;
 
@@ -112,11 +116,8 @@ class _CalendarPageState extends State<CalendarPage> {
         1;
   }
 
-  // ---------------------------------------------------------------------
   // KONVERSI KALENDER BALI (SAKA)
   // Sasih (bulan candra) TIDAK dihitung -- butuh astronomi bulan,
-  // di luar cakupan tugas ini.
-  // ---------------------------------------------------------------------
 
   String _convertToSakaBali(DateTime date) {
     final sakaYear = _getSakaYear(date);
@@ -227,11 +228,18 @@ class _CalendarPageState extends State<CalendarPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Konversi Tanggal'),
-        backgroundColor: Colors.transparent,
+        title: const Text(
+          'Konversi Tanggal',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: AppColors.background,
         foregroundColor: AppColors.primaryDark,
         elevation: 0,
+        scrolledUnderElevation: 2,
+        shadowColor: AppColors.primaryDark.withValues(alpha: 0.15),
+        surfaceTintColor: Colors.transparent,
       ),
+      backgroundColor: AppColors.background,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

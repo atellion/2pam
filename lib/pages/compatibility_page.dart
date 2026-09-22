@@ -212,11 +212,18 @@ class _CompatibilityPageState extends State<CompatibilityPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cek Kecocokan'),
-        backgroundColor: Colors.transparent,
+        title: const Text(
+          'Cek Kecocokan',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: AppColors.background,
         foregroundColor: AppColors.primaryDark,
         elevation: 0,
+        scrolledUnderElevation: 2,
+        shadowColor: AppColors.primaryDark.withValues(alpha: 0.15),
+        surfaceTintColor: Colors.transparent,
       ),
+      backgroundColor: AppColors.background,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

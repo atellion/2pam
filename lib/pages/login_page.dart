@@ -43,8 +43,6 @@ class _LoginPageState extends State<LoginPage> {
         email: emailController.text.trim(),
         password: passwordController.text,
       );
-      // Tidak perlu widget.onLogin() manual, StreamBuilder di AppGate
-      // akan otomatis pindah ke HomePage saat status auth berubah.
     } on AuthException catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -58,6 +56,40 @@ class _LoginPageState extends State<LoginPage> {
     } finally {
       if (mounted) setState(() => isLoading = false);
     }
+  }
+
+  InputDecoration _fieldDecoration({
+    required String label,
+    required IconData icon,
+    Widget? suffixIcon,
+  }) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: const TextStyle(color: AppColors.textLight),
+      prefixIcon: Icon(icon, color: AppColors.primary),
+      suffixIcon: suffixIcon,
+      filled: true,
+      fillColor: AppColors.background,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(
+          color: AppColors.primary.withValues(alpha: 0.35),
+        ),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(
+          color: AppColors.primary.withValues(alpha: 0.35),
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(
+          color: AppColors.primaryDark,
+          width: 1.5,
+        ),
+      ),
+    );
   }
 
   @override
@@ -87,39 +119,23 @@ class _LoginPageState extends State<LoginPage> {
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 67, 65, 65),
+                        color: AppColors.textMain,
                       ),
                     ),
                     const SizedBox(height: 8),
                     const Text(
                       'Silakan login untuk melanjutkan',
                       textAlign: TextAlign.center,
-                      style:
-                          TextStyle(color: Color.fromARGB(255, 165, 161, 158)),
+                      style: TextStyle(color: AppColors.textLight),
                     ),
                     const SizedBox(height: 32),
                     TextFormField(
                       controller: emailController,
                       keyboardType: TextInputType.emailAddress,
-                      style: const TextStyle(
-                          color: Color.fromARGB(255, 255, 255, 255)),
-                      decoration: InputDecoration(
-                        labelText: 'Email',
-                        labelStyle: const TextStyle(
-                            color: Color.fromARGB(255, 255, 255, 255)),
-                        prefixIcon: const Icon(Icons.email,
-                            color: Color.fromARGB(255, 255, 255, 255)),
-                        filled: true,
-                        fillColor: AppColors.primaryDark.withOpacity(0.5),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide.none,
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: const BorderSide(
-                              color: AppColors.primary, width: 1.5),
-                        ),
+                      style: const TextStyle(color: AppColors.textMain),
+                      decoration: _fieldDecoration(
+                        label: 'Email',
+                        icon: Icons.email,
                       ),
                       textInputAction: TextInputAction.next,
                       validator: (value) {
@@ -136,36 +152,22 @@ class _LoginPageState extends State<LoginPage> {
                     TextFormField(
                       controller: passwordController,
                       obscureText: obscurePassword,
-                      style: const TextStyle(color: AppColors.surfaceWhite),
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        labelStyle: const TextStyle(
-                            color: Color.fromARGB(255, 251, 251, 251)),
-                        prefixIcon: const Icon(Icons.lock,
-                            color: Color.fromARGB(255, 255, 255, 255)),
+                      style: const TextStyle(color: AppColors.textMain),
+                      decoration: _fieldDecoration(
+                        label: 'Password',
+                        icon: Icons.lock,
                         suffixIcon: IconButton(
                           icon: Icon(
                             obscurePassword
                                 ? Icons.visibility
                                 : Icons.visibility_off,
-                            color: const Color.fromARGB(255, 255, 255, 255),
+                            color: AppColors.textLight,
                           ),
                           onPressed: () {
                             setState(() {
                               obscurePassword = !obscurePassword;
                             });
                           },
-                        ),
-                        filled: true,
-                        fillColor: AppColors.primaryDark.withOpacity(0.5),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide.none,
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: const BorderSide(
-                              color: AppColors.primary, width: 1.5),
                         ),
                       ),
                       onFieldSubmitted: (_) {
@@ -187,21 +189,19 @@ class _LoginPageState extends State<LoginPage> {
                               height: 18,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                color: AppColors.primaryDark,
+                                color: Colors.white,
                               ),
                             )
-                          : const Icon(Icons.login,
-                              color: Color.fromARGB(255, 255, 255, 255)),
+                          : const Icon(Icons.login, color: Colors.white),
                       label: Text(
                         isLoading ? 'Memproses...' : 'Login',
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 255, 255, 255),
+                          color: Colors.white,
                         ),
                       ),
                       style: FilledButton.styleFrom(
-                        backgroundColor:
-                            AppColors.primary, // Lighter button color
+                        backgroundColor: AppColors.primaryDark,
                         padding: const EdgeInsets.symmetric(
                           vertical: 16,
                         ),
